@@ -28,7 +28,7 @@ jobs:
           echo "Bütçe Takip proje dosyaları:"
           find . -maxdepth 3 -type f | sort
 
-            - name: Proje klasörlerini bul
+          - name: Proje klasörlerini bul
         run: |
           echo "=== KLASÖRLER ==="
           find . -type d | sort
