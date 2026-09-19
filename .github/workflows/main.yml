@@ -30,9 +30,29 @@ jobs:
         run: |
           unzip -o *.zip -d android-project
 
-      - name: Build APK
+      - name: Prepare Android project
+        working-directory: android-project
         run: |
-          cd android-project
+          # google-services.json app klasörüne alınır
+          if [ -f "google-services.json" ]; then
+            cp google-services.json app/google-services.json
+          fi
+
+          # Android debug keystore oluşturulur
+          keytool -genkeypair \
+            -v \
+            -keystore debug.keystore \
+            -storepass android \
+            -alias androiddebugkey \
+            -keypass android \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US"
+
+      - name: Build Debug APK
+        working-directory: android-project
+        run: |
           gradle assembleDebug --no-daemon
 
       - name: Upload APK
