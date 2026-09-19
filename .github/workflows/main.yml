@@ -26,27 +26,17 @@ jobs:
         with:
           gradle-version: '9.3.1'
 
-      - name: Find and Build Android Project
-        shell: bash
+      - name: Extract project ZIP
         run: |
-          PROJECT_DIR=$(find . -name "settings.gradle.kts" -type f -not -path "*/.gradle/*" | head -n 1)
+          unzip -o *.zip -d android-project
 
-          if [ -z "$PROJECT_DIR" ]; then
-            echo "settings.gradle.kts bulunamadı!"
-            echo "GitHub'daki dosyalar:"
-            find . -maxdepth 4 -type f | head -100
-            exit 1
-          fi
-
-          PROJECT_DIR=$(dirname "$PROJECT_DIR")
-
-          echo "Android proje klasörü:"
-          echo "$PROJECT_DIR"
-
-          gradle -p "$PROJECT_DIR" assembleDebug --no-daemon
+      - name: Build APK
+        run: |
+          cd android-project
+          gradle assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Butce-Takip-APK
-          path: "**/app/build/outputs/apk/debug/*.apk"
+          path: android-project/app/build/outputs/apk/debug/*.apk
