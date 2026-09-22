@@ -27,7 +27,12 @@ jobs:
           gradle-version: '9.3.1'
 
       - name: Extract project ZIP
-        run: unzip -o bütçe-takip.zip -d android-project
+        run: |
+          mkdir -p temp_dir
+          unzip -o bütçe-takip.zip -d temp_dir
+          mkdir -p android-project
+          # Zip içinden çıkan ana klasörü es geçerek dosyaları doğrudan android-project altına taşır
+          cp -r temp_dir/*/* android-project/ 2>/dev/null || cp -r temp_dir/* android-project/
 
       - name: Prepare Android project
         working-directory: android-project
